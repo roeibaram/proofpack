@@ -1,4 +1,5 @@
 import { CASE_STATUS_LABELS, DOCUMENT_STATUS_LABELS } from '../../constants/caseOptions.js'
+import { getDueLabel, getDueTone } from '../../utils/dueDates.js'
 import { formatDate } from '../../utils/formatDate.js'
 import { DocumentForm } from '../DocumentForm/DocumentForm.jsx'
 import './PackageDetails.css'
@@ -44,6 +45,9 @@ export function PackageDetails({
           <span>{CASE_STATUS_LABELS[caseItem.status]}</span>
           <span>{caseItem.receivedCount} received</span>
           <span>{caseItem.missingCount} open</span>
+          {caseItem.dueDate ? (
+            <span className={`due-chip due-chip--${getDueTone(caseItem.dueDate)}`}>{getDueLabel(caseItem.dueDate)}</span>
+          ) : null}
         </div>
       </div>
 
@@ -104,6 +108,9 @@ export function PackageDetails({
                   <div className="document-card__header">
                     <div>
                       <span className={`status-pill status-pill--${document.status}`}>{DOCUMENT_STATUS_LABELS[document.status]}</span>
+                      {document.dueDate ? (
+                        <span className={`due-chip due-chip--${getDueTone(document.dueDate)}`}>{getDueLabel(document.dueDate)}</span>
+                      ) : null}
                       <h4>{document.label}</h4>
                       <p>
                         {document.category}

@@ -8,11 +8,20 @@ export function FilterBar({
   onClearFilters,
   onSearchChange,
   onStatusChange,
+  onSortModeChange,
   searchQuery,
+  sortMode,
   statusFilter
 }) {
   const statusLabel = statusFilter === 'all' ? 'All stages' : CASE_STATUS_LABELS[statusFilter]
   const caseTypeLabel = caseTypeFilter === 'all' ? 'All folder types' : caseTypeFilter
+  const sortLabel =
+    {
+      recent: 'Recent activity',
+      followUp: 'Nearest follow-up',
+      missing: 'Most open items',
+      progress: 'Most complete'
+    }[sortMode] ?? 'Recent activity'
 
   return (
     <section className="panel filter-bar">
@@ -20,6 +29,7 @@ export function FilterBar({
         <span className="filter-bar__tab">Search file</span>
         <span className="filter-bar__tab">{statusLabel}</span>
         <span className="filter-bar__tab">{caseTypeLabel}</span>
+        <span className="filter-bar__tab">{sortLabel}</span>
       </div>
 
       <div className="filter-bar__heading">
@@ -77,6 +87,16 @@ export function FilterBar({
                 {option}
               </option>
             ))}
+          </select>
+        </label>
+
+        <label className="field">
+          <span className="field__label">Sort by</span>
+          <select className="field__input" onChange={(event) => onSortModeChange(event.target.value)} value={sortMode}>
+            <option value="recent">Recent activity</option>
+            <option value="followUp">Nearest follow-up</option>
+            <option value="missing">Most open items</option>
+            <option value="progress">Most complete</option>
           </select>
         </label>
       </div>

@@ -111,6 +111,33 @@
   text-transform: uppercase;
 }
 
+.due-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  background: rgba(119, 101, 74, 0.08);
+}
+
+.due-chip--overdue {
+  color: #7f3f2e;
+  background: rgba(168, 110, 90, 0.18);
+}
+
+.due-chip--soon {
+  color: #7b5f1e;
+  background: rgba(180, 150, 74, 0.22);
+}
+
+.due-chip--scheduled {
+  color: #506657;
+  background: rgba(109, 129, 113, 0.18);
+}
+
 .panel {
   position: relative;
   padding: 1.35rem;

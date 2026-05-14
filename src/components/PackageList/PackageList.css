@@ -48,6 +48,11 @@
   gap: 0.3rem;
 }
 
+.package-card__title-block .status-pill,
+.package-card__title-block .due-chip {
+  justify-self: start;
+}
+
 .package-card__note-line {
   color: var(--muted);
 }

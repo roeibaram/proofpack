@@ -1,4 +1,5 @@
 import { CASE_STATUS_LABELS } from '../../constants/caseOptions.js'
+import { getDueLabel, getDueTone } from '../../utils/dueDates.js'
 import { formatDate } from '../../utils/formatDate.js'
 import './PackageList.css'
 
@@ -34,6 +35,9 @@ export function PackageList({ cases, hasActiveFilters, onClearFilters, onDeleteC
           <div className="package-card__header">
             <div className="package-card__title-block">
               <span className={`status-pill status-pill--${caseItem.status}`}>{CASE_STATUS_LABELS[caseItem.status]}</span>
+              {caseItem.dueDate ? (
+                <span className={`due-chip due-chip--${getDueTone(caseItem.dueDate)}`}>{getDueLabel(caseItem.dueDate)}</span>
+              ) : null}
               <h3>{caseItem.title}</h3>
               <p className="package-card__note-line">
                 Last touched {formatDate(caseItem.updatedAt)}

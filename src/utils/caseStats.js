@@ -1,3 +1,5 @@
+import { getDueSortValue, getDueTone } from './dueDates.js'
+
 export function getDashboardStats(cases) {
   const totals = cases.reduce(
     (summary, caseItem) => {
@@ -5,6 +7,12 @@ export function getDashboardStats(cases) {
       summary.totalDocuments += caseItem.documentCount
       summary.receivedDocuments += caseItem.receivedCount
       summary.missingDocuments += caseItem.missingCount
+
+      const dueTone = getDueTone(caseItem.dueDate)
+
+      if (dueTone === 'overdue' || dueTone === 'soon') {
+        summary.urgentCases += 1
+      }
 
       if (caseItem.status === 'ready' || caseItem.status === 'submitted') {
         summary.readyCases += 1
@@ -17,7 +25,8 @@ export function getDashboardStats(cases) {
       totalDocuments: 0,
       receivedDocuments: 0,
       missingDocuments: 0,
-      readyCases: 0
+      readyCases: 0,
+      urgentCases: 0
     }
   )
 
@@ -33,26 +42,44 @@ export function getDashboardStats(cases) {
       detail: `${totals.receivedDocuments} received`
     },
     {
-      label: 'Missing items',
-      value: totals.missingDocuments,
-      detail: 'Still needs follow-up'
+      label: 'Urgent follow-ups',
+      value: totals.urgentCases,
+      detail: `${totals.missingDocuments} open evidence item${totals.missingDocuments === 1 ? '' : 's'}`
     }
   ]
 }
 
-export function getVisibleCases(cases, searchQuery, statusFilter, caseTypeFilter) {
+export function getVisibleCases(cases, searchQuery, statusFilter, caseTypeFilter, sortMode) {
   const normalizedSearchQuery = searchQuery.trim().toLowerCase()
 
-  return cases.filter((caseItem) => {
-    const matchesStatus = statusFilter === 'all' || caseItem.status === statusFilter
-    const matchesCaseType = caseTypeFilter === 'all' || caseItem.caseType === caseTypeFilter
+  return cases
+    .filter((caseItem) => {
+      const matchesStatus = statusFilter === 'all' || caseItem.status === statusFilter
+      const matchesCaseType = caseTypeFilter === 'all' || caseItem.caseType === caseTypeFilter
 
-    if (!normalizedSearchQuery) {
-      return matchesStatus && matchesCaseType
-    }
+      if (!normalizedSearchQuery) {
+        return matchesStatus && matchesCaseType
+      }
 
-    const haystack = [caseItem.title, caseItem.caseType, caseItem.description].join(' ').toLowerCase()
+      const haystack = [caseItem.title, caseItem.caseType, caseItem.description].join(' ').toLowerCase()
 
-    return matchesStatus && matchesCaseType && haystack.includes(normalizedSearchQuery)
-  })
+      return matchesStatus && matchesCaseType && haystack.includes(normalizedSearchQuery)
+    })
+    .sort((leftCase, rightCase) => {
+      const updatedDifference = new Date(rightCase.updatedAt) - new Date(leftCase.updatedAt)
+
+      if (sortMode === 'followUp') {
+        return getDueSortValue(leftCase.dueDate) - getDueSortValue(rightCase.dueDate) || updatedDifference
+      }
+
+      if (sortMode === 'missing') {
+        return rightCase.missingCount - leftCase.missingCount || updatedDifference
+      }
+
+      if (sortMode === 'progress') {
+        return rightCase.progress - leftCase.progress || updatedDifference
+      }
+
+      return updatedDifference
+    })
 }

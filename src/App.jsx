@@ -29,6 +29,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [caseTypeFilter, setCaseTypeFilter] = useState('all')
+  const [sortMode, setSortMode] = useState('recent')
   const [loadingCases, setLoadingCases] = useState(false)
   const [isSavingCase, setIsSavingCase] = useState(false)
   const [isSavingDocument, setIsSavingDocument] = useState(false)
@@ -183,12 +184,13 @@ function App() {
     setSearchQuery('')
     setStatusFilter('all')
     setCaseTypeFilter('all')
+    setSortMode('recent')
   }
 
   const stats = useMemo(() => getDashboardStats(cases), [cases])
   const visibleCases = useMemo(
-    () => getVisibleCases(cases, searchQuery, statusFilter, caseTypeFilter),
-    [cases, searchQuery, statusFilter, caseTypeFilter]
+    () => getVisibleCases(cases, searchQuery, statusFilter, caseTypeFilter, sortMode),
+    [cases, searchQuery, statusFilter, caseTypeFilter, sortMode]
   )
   const hasActiveFilters = Boolean(searchQuery.trim()) || statusFilter !== 'all' || caseTypeFilter !== 'all'
 
@@ -245,8 +247,10 @@ function App() {
               onCaseTypeChange={setCaseTypeFilter}
               onClearFilters={handleClearFilters}
               onSearchChange={setSearchQuery}
+              onSortModeChange={setSortMode}
               onStatusChange={setStatusFilter}
               searchQuery={searchQuery}
+              sortMode={sortMode}
               statusFilter={statusFilter}
             />
 
