@@ -3,7 +3,11 @@ export function formatDate(timestamp) {
     return 'just now'
   }
 
-  return new Date(timestamp).toLocaleDateString(undefined, {
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(timestamp)
+    ? new Date(`${timestamp}T12:00:00`)
+    : new Date(timestamp)
+
+  return date.toLocaleDateString(undefined, {
     month: 'short',
     day: 'numeric'
   })

@@ -39,6 +39,7 @@ function serializeCase(caseDocument) {
     caseType: caseDocument.caseType,
     status: caseDocument.status,
     description: caseDocument.description,
+    dueDate: caseDocument.dueDate,
     documentCount,
     requiredDocumentCount: requiredDocuments.length,
     receivedCount,
@@ -52,6 +53,7 @@ function serializeCase(caseDocument) {
       category: document.category,
       status: document.status,
       note: document.note,
+      dueDate: document.dueDate,
       required: document.required,
       createdAt: document.createdAt,
       updatedAt: document.updatedAt
@@ -59,12 +61,36 @@ function serializeCase(caseDocument) {
   }
 }
 
+function normalizeDateValue(value) {
+  return typeof value === 'string' ? value.trim() : ''
+}
+
+function isValidDateInput(value) {
+  if (!value) {
+    return true
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false
+  }
+
+  const [year, month, day] = value.split('-').map(Number)
+  const parsedDate = new Date(year, month - 1, day)
+
+  return (
+    parsedDate.getFullYear() === year &&
+    parsedDate.getMonth() === month - 1 &&
+    parsedDate.getDate() === day
+  )
+}
+
 function normalizeCasePayload(payload) {
   return {
     title: payload.title?.trim() ?? '',
     caseType: payload.caseType?.trim() ?? '',
     status: payload.status ?? 'draft',
-    description: payload.description?.trim() ?? ''
+    description: payload.description?.trim() ?? '',
+    dueDate: normalizeDateValue(payload.dueDate)
   }
 }
 
@@ -74,6 +100,7 @@ function normalizeDocumentPayload(payload) {
     category: payload.category?.trim() ?? '',
     status: payload.status ?? 'missing',
     note: payload.note?.trim() ?? '',
+    dueDate: normalizeDateValue(payload.dueDate),
     required: payload.required ?? true
   }
 }
@@ -87,6 +114,10 @@ function validateCasePayload(casePayload) {
     return 'Choose a case type.'
   }
 
+  if (!isValidDateInput(casePayload.dueDate)) {
+    return 'Choose a valid follow-up date.'
+  }
+
   return ''
 }
 
@@ -97,6 +128,10 @@ function validateDocumentPayload(documentPayload) {
 
   if (!documentPayload.category) {
     return 'Choose a document category.'
+  }
+
+  if (!isValidDateInput(documentPayload.dueDate)) {
+    return 'Choose a valid follow-up date.'
   }
 
   return ''

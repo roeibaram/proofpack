@@ -7,6 +7,7 @@ const EMPTY_DOCUMENT_FORM = {
   category: DOCUMENT_CATEGORY_OPTIONS[0],
   status: 'missing',
   note: '',
+  dueDate: '',
   required: true
 }
 
@@ -17,6 +18,7 @@ function getInitialDocumentForm(documentToEdit) {
         category: documentToEdit.category,
         status: documentToEdit.status,
         note: documentToEdit.note,
+        dueDate: documentToEdit.dueDate ?? '',
         required: documentToEdit.required
       }
     : EMPTY_DOCUMENT_FORM
@@ -125,6 +127,17 @@ export function DocumentForm({ documentToEdit, isSubmitting, onCancelEdit, onSub
           placeholder="Add context, follow-up details, or what still needs verification."
           rows="3"
           value={formValues.note}
+        />
+      </label>
+
+      <label className="field">
+        <span className="field__label">Follow-up date</span>
+        <input
+          className="field__input"
+          name="dueDate"
+          onChange={handleChange}
+          type="date"
+          value={formValues.dueDate}
         />
       </label>
 

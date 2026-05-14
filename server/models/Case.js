@@ -25,6 +25,12 @@ const documentSchema = new mongoose.Schema(
       maxlength: 400,
       default: ''
     },
+    dueDate: {
+      type: String,
+      trim: true,
+      maxlength: 10,
+      default: ''
+    },
     required: {
       type: Boolean,
       default: true
@@ -64,6 +70,12 @@ const caseSchema = new mongoose.Schema(
       type: String,
       trim: true,
       maxlength: 500,
+      default: ''
+    },
+    dueDate: {
+      type: String,
+      trim: true,
+      maxlength: 10,
       default: ''
     },
     documents: {

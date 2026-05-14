@@ -61,6 +61,10 @@ export function PackageDetails({
             <span className="detail-summary__label">Latest activity</span>
             <strong>{formatDate(caseItem.updatedAt)}</strong>
           </div>
+          <div className="detail-summary__field">
+            <span className="detail-summary__label">Next follow-up</span>
+            <strong>{caseItem.dueDate ? formatDate(caseItem.dueDate) : 'Not scheduled'}</strong>
+          </div>
         </div>
 
         <p>{caseItem.description || 'Add a cover note in the folder sheet to explain the purpose of this file and any submission constraints.'}</p>
@@ -123,6 +127,7 @@ export function PackageDetails({
 
                   <div className="document-card__footer">
                     <span>Entry {String(index + 1).padStart(2, '0')}</span>
+                    <span>{document.dueDate ? `Follow up ${formatDate(document.dueDate)}` : 'No follow-up date'}</span>
                     <span>Updated {formatDate(document.updatedAt)}</span>
                   </div>
                 </div>

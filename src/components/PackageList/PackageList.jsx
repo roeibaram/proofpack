@@ -35,7 +35,10 @@ export function PackageList({ cases, hasActiveFilters, onClearFilters, onDeleteC
             <div className="package-card__title-block">
               <span className={`status-pill status-pill--${caseItem.status}`}>{CASE_STATUS_LABELS[caseItem.status]}</span>
               <h3>{caseItem.title}</h3>
-              <p className="package-card__note-line">Last touched {formatDate(caseItem.updatedAt)}</p>
+              <p className="package-card__note-line">
+                Last touched {formatDate(caseItem.updatedAt)}
+                {caseItem.dueDate ? ` • follow up ${formatDate(caseItem.dueDate)}` : ''}
+              </p>
             </div>
 
             <div className="action-row">

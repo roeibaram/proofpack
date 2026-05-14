@@ -6,7 +6,8 @@ const EMPTY_CASE_FORM = {
   title: '',
   caseType: CASE_TYPE_OPTIONS[0],
   status: 'draft',
-  description: ''
+  description: '',
+  dueDate: ''
 }
 
 function getInitialCaseForm(caseToEdit) {
@@ -15,7 +16,8 @@ function getInitialCaseForm(caseToEdit) {
         title: caseToEdit.title,
         caseType: caseToEdit.caseType,
         status: caseToEdit.status,
-        description: caseToEdit.description
+        description: caseToEdit.description,
+        dueDate: caseToEdit.dueDate ?? ''
       }
     : EMPTY_CASE_FORM
 }
@@ -71,7 +73,7 @@ export function PackageForm({ caseToEdit, isSubmitting, onCancelSelection, onSub
 
       <form className="stack" onSubmit={handleSubmit}>
         <label className="field">
-          <span className="field__label">Package title</span>
+          <span className="field__label">Folder title</span>
           <input
             className="field__input"
             name="title"
@@ -116,6 +118,17 @@ export function PackageForm({ caseToEdit, isSubmitting, onCancelSelection, onSub
             placeholder="Describe what this folder covers, which parties are involved, and what still needs to be collected."
             rows="4"
             value={formValues.description}
+          />
+        </label>
+
+        <label className="field">
+          <span className="field__label">Next follow-up</span>
+          <input
+            className="field__input"
+            name="dueDate"
+            onChange={handleChange}
+            type="date"
+            value={formValues.dueDate}
           />
         </label>
 
