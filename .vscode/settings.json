@@ -1,0 +1,7 @@
+{
+  "files.exclude": {
+    "**/.archive": true,
+    "**/node_modules": true,
+    "**/dist": true
+  }
+}
