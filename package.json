@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "seed": "node server/scripts/seedDemoData.js",
     "server": "node server/server.js"
   },
   "dependencies": {
