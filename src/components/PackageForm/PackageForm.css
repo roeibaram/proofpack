@@ -25,6 +25,28 @@
   color: var(--muted);
 }
 
+.starter-packet {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.9rem 1rem;
+  border: 1px dashed rgba(121, 100, 70, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 250, 242, 0.72);
+}
+
+.starter-packet__label {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.starter-packet__copy {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

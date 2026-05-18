@@ -7,6 +7,7 @@ import { PackageDetails } from './components/PackageDetails/PackageDetails.jsx'
 import { PackageForm } from './components/PackageForm/PackageForm.jsx'
 import { PackageList } from './components/PackageList/PackageList.jsx'
 import { StatsBar } from './components/StatsBar/StatsBar.jsx'
+import { getStarterPacket } from './constants/starterPackets.js'
 import { useAuth } from './context/AuthContext.jsx'
 import { getDashboardStats, getVisibleCases } from './utils/caseStats.js'
 import './App.css'
@@ -76,9 +77,27 @@ function App() {
     setErrorMessage('')
 
     try {
+      const { useStarterPacket = false, ...casePayload } = formValues
       const savedCase = selectedCase
-        ? await updateCase(selectedCase.id, formValues)
-        : await createCase(formValues)
+        ? await updateCase(selectedCase.id, casePayload)
+        : await createCase(casePayload)
+
+      if (!selectedCase && useStarterPacket) {
+        const starterPacket = getStarterPacket(casePayload.caseType)
+
+        if (starterPacket.length) {
+          try {
+            for (const documentPayload of starterPacket) {
+              await createDocument(savedCase.id, documentPayload)
+            }
+          } catch {
+            await loadCases(false)
+            setSelectedCaseId(savedCase.id)
+            setErrorMessage('Folder created, but the starter packet was only filled in partway.')
+            return
+          }
+        }
+      }
 
       await loadCases(false)
       setSelectedCaseId(savedCase.id)

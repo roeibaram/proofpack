@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CASE_STATUS_OPTIONS, CASE_TYPE_OPTIONS } from '../../constants/caseOptions.js'
+import { getStarterPacket, hasStarterPacket } from '../../constants/starterPackets.js'
 import './PackageForm.css'
 
 const EMPTY_CASE_FORM = {
@@ -7,7 +8,8 @@ const EMPTY_CASE_FORM = {
   caseType: CASE_TYPE_OPTIONS[0],
   status: 'draft',
   description: '',
-  dueDate: ''
+  dueDate: '',
+  useStarterPacket: true
 }
 
 function getInitialCaseForm(caseToEdit) {
@@ -17,7 +19,8 @@ function getInitialCaseForm(caseToEdit) {
         caseType: caseToEdit.caseType,
         status: caseToEdit.status,
         description: caseToEdit.description,
-        dueDate: caseToEdit.dueDate ?? ''
+        dueDate: caseToEdit.dueDate ?? '',
+        useStarterPacket: false
       }
     : EMPTY_CASE_FORM
 }
@@ -25,10 +28,15 @@ function getInitialCaseForm(caseToEdit) {
 export function PackageForm({ caseToEdit, isSubmitting, onCancelSelection, onSubmit }) {
   const [formValues, setFormValues] = useState(() => getInitialCaseForm(caseToEdit))
   const [localError, setLocalError] = useState('')
+  const starterPacket = getStarterPacket(formValues.caseType)
+  const starterPacketAvailable = hasStarterPacket(formValues.caseType)
 
   function handleChange(event) {
-    const { name, value } = event.target
-    setFormValues((currentValues) => ({ ...currentValues, [name]: value }))
+    const { name, type, value, checked } = event.target
+    setFormValues((currentValues) => ({
+      ...currentValues,
+      [name]: type === 'checkbox' ? checked : value
+    }))
     setLocalError('')
   }
 
@@ -131,6 +139,33 @@ export function PackageForm({ caseToEdit, isSubmitting, onCancelSelection, onSub
             value={formValues.dueDate}
           />
         </label>
+
+        {!caseToEdit ? (
+          <div className="starter-packet">
+            <label className="field field--checkbox">
+              <input
+                checked={formValues.useStarterPacket && starterPacketAvailable}
+                disabled={!starterPacketAvailable}
+                name="useStarterPacket"
+                onChange={handleChange}
+                type="checkbox"
+              />
+              <span>Load a starter packet for this folder type</span>
+            </label>
+
+            {starterPacketAvailable ? (
+              <div className="starter-packet__preview">
+                <p className="starter-packet__label">{starterPacket.length} starter slips ready</p>
+                <p className="starter-packet__copy">
+                  {starterPacket.slice(0, 3).map((item) => item.label).join(', ')}
+                  {starterPacket.length > 3 ? ', and more.' : '.'}
+                </p>
+              </div>
+            ) : (
+              <p className="starter-packet__copy">This folder type starts blank for now.</p>
+            )}
+          </div>
+        ) : null}
 
         {localError ? <div className="app__feedback app__feedback--error">{localError}</div> : null}
 
