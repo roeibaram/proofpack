@@ -26,6 +26,13 @@
   justify-items: end;
 }
 
+.package-details__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: 0.6rem;
+}
+
 .detail-stats {
   display: flex;
   flex-wrap: wrap;
@@ -163,6 +170,10 @@
 @media (max-width: 720px) {
   .package-details__side {
     justify-items: start;
+  }
+
+  .package-details__actions {
+    justify-content: start;
   }
 
   .document-card__header {

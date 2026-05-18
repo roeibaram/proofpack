@@ -1,5 +1,6 @@
 import { CASE_STATUS_LABELS, DOCUMENT_STATUS_LABELS } from '../../constants/caseOptions.js'
 import { getDueLabel, getDueTone } from '../../utils/dueDates.js'
+import { downloadCaseSummary } from '../../utils/exportCaseSummary.js'
 import { formatDate } from '../../utils/formatDate.js'
 import { DocumentForm } from '../DocumentForm/DocumentForm.jsx'
 import './PackageDetails.css'
@@ -53,9 +54,14 @@ export function PackageDetails({
             ) : null}
           </div>
 
-          <button className="button button--ghost" disabled={isDuplicatingCase} onClick={() => onDuplicateCase(caseItem.id)} type="button">
-            {isDuplicatingCase ? 'Making copy...' : 'Make working copy'}
-          </button>
+          <div className="package-details__actions">
+            <button className="button button--secondary" onClick={() => downloadCaseSummary(caseItem)} type="button">
+              Export summary
+            </button>
+            <button className="button button--ghost" disabled={isDuplicatingCase} onClick={() => onDuplicateCase(caseItem.id)} type="button">
+              {isDuplicatingCase ? 'Making copy...' : 'Make working copy'}
+            </button>
+          </div>
         </div>
       </div>
 
