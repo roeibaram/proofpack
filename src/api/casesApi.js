@@ -42,6 +42,15 @@ export async function deleteCase(caseId) {
   })
 }
 
+export async function duplicateCase(caseId) {
+  const payload = await request(`/api/cases/${caseId}/duplicate`, {
+    method: 'POST',
+    token: getStoredToken()
+  })
+
+  return payload.case
+}
+
 export async function createDocument(caseId, documentPayload) {
   const payload = await request(`/api/cases/${caseId}/documents`, {
     method: 'POST',

@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
-import { createCase, createDocument, deleteCase, deleteDocument, getCases, updateCase, updateDocument } from './api/casesApi.js'
+import {
+  createCase,
+  createDocument,
+  deleteCase,
+  deleteDocument,
+  duplicateCase,
+  getCases,
+  updateCase,
+  updateDocument
+} from './api/casesApi.js'
 import { AuthPanel } from './components/AuthPanel/AuthPanel.jsx'
 import { DashboardHeader } from './components/DashboardHeader/DashboardHeader.jsx'
 import { FilterBar } from './components/FilterBar/FilterBar.jsx'
@@ -32,6 +41,7 @@ function App() {
   const [caseTypeFilter, setCaseTypeFilter] = useState('all')
   const [sortMode, setSortMode] = useState('recent')
   const [loadingCases, setLoadingCases] = useState(false)
+  const [isDuplicatingCase, setIsDuplicatingCase] = useState(false)
   const [isSavingCase, setIsSavingCase] = useState(false)
   const [isSavingDocument, setIsSavingDocument] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -126,6 +136,22 @@ function App() {
       }
     } catch (error) {
       setErrorMessage(error.message || 'Unable to remove this folder right now.')
+    }
+  }
+
+  async function handleDuplicateCase(caseId) {
+    setIsDuplicatingCase(true)
+    setErrorMessage('')
+
+    try {
+      const duplicatedCase = await duplicateCase(caseId)
+      await loadCases(false)
+      setSelectedCaseId(duplicatedCase.id)
+      setEditingDocument(null)
+    } catch (error) {
+      setErrorMessage(error.message || 'Unable to make a working copy right now.')
+    } finally {
+      setIsDuplicatingCase(false)
     }
   }
 
@@ -304,9 +330,11 @@ function App() {
             <PackageDetails
               caseItem={selectedCase}
               documentToEdit={activeDocument}
+              isDuplicatingCase={isDuplicatingCase}
               isSavingDocument={isSavingDocument}
               onCancelDocumentEdit={handleCancelDocumentEdit}
               onDeleteDocument={handleDeleteDocument}
+              onDuplicateCase={handleDuplicateCase}
               onEditDocument={handleEditDocument}
               onSaveDocument={handleSaveDocument}
             />

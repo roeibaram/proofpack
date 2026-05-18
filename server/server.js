@@ -273,6 +273,34 @@ app.delete('/api/cases/:caseId', requireAuth, async (request, response) => {
   response.json({ deletedCaseId: request.params.caseId })
 })
 
+app.post('/api/cases/:caseId/duplicate', requireAuth, async (request, response) => {
+  const caseDocument = await Case.findOne({ _id: request.params.caseId, owner: request.userId })
+
+  if (!caseDocument) {
+    response.status(404).json({ message: 'Package not found.' })
+    return
+  }
+
+  const duplicatedCase = await Case.create({
+    owner: request.userId,
+    title: `${caseDocument.title} copy`,
+    caseType: caseDocument.caseType,
+    status: 'draft',
+    description: caseDocument.description,
+    dueDate: '',
+    documents: caseDocument.documents.map((document) => ({
+      label: document.label,
+      category: document.category,
+      status: 'missing',
+      note: document.note,
+      dueDate: '',
+      required: document.required
+    }))
+  })
+
+  response.status(201).json({ case: serializeCase(duplicatedCase) })
+})
+
 app.post('/api/cases/:caseId/documents', requireAuth, async (request, response) => {
   const caseDocument = await Case.findOne({ _id: request.params.caseId, owner: request.userId })
 

@@ -7,7 +7,9 @@ import './PackageDetails.css'
 export function PackageDetails({
   caseItem,
   documentToEdit,
+  isDuplicatingCase,
   isSavingDocument,
+  onDuplicateCase,
   onCancelDocumentEdit,
   onDeleteDocument,
   onEditDocument,
@@ -41,13 +43,19 @@ export function PackageDetails({
           <p className="section-heading__copy">{caseItem.caseType}</p>
         </div>
 
-        <div className="detail-stats">
-          <span>{CASE_STATUS_LABELS[caseItem.status]}</span>
-          <span>{caseItem.receivedCount} received</span>
-          <span>{caseItem.missingCount} open</span>
-          {caseItem.dueDate ? (
-            <span className={`due-chip due-chip--${getDueTone(caseItem.dueDate)}`}>{getDueLabel(caseItem.dueDate)}</span>
-          ) : null}
+        <div className="package-details__side">
+          <div className="detail-stats">
+            <span>{CASE_STATUS_LABELS[caseItem.status]}</span>
+            <span>{caseItem.receivedCount} received</span>
+            <span>{caseItem.missingCount} open</span>
+            {caseItem.dueDate ? (
+              <span className={`due-chip due-chip--${getDueTone(caseItem.dueDate)}`}>{getDueLabel(caseItem.dueDate)}</span>
+            ) : null}
+          </div>
+
+          <button className="button button--ghost" disabled={isDuplicatingCase} onClick={() => onDuplicateCase(caseItem.id)} type="button">
+            {isDuplicatingCase ? 'Making copy...' : 'Make working copy'}
+          </button>
         </div>
       </div>
 

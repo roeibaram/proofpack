@@ -20,6 +20,12 @@
   text-transform: uppercase;
 }
 
+.package-details__side {
+  display: grid;
+  gap: 0.65rem;
+  justify-items: end;
+}
+
 .detail-stats {
   display: flex;
   flex-wrap: wrap;
@@ -155,6 +161,10 @@
 }
 
 @media (max-width: 720px) {
+  .package-details__side {
+    justify-items: start;
+  }
+
   .document-card__header {
     flex-direction: column;
   }
