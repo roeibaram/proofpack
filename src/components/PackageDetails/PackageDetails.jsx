@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { CASE_STATUS_LABELS, DOCUMENT_STATUS_LABELS } from '../../constants/caseOptions.js'
 import { getDueLabel, getDueTone } from '../../utils/dueDates.js'
 import { downloadCaseSummary } from '../../utils/exportCaseSummary.js'
@@ -16,11 +17,38 @@ export function PackageDetails({
   onEditDocument,
   onSaveDocument
 }) {
+  const [copyStatus, setCopyStatus] = useState('idle')
   const timelineDocuments = caseItem
     ? [...caseItem.documents].sort((leftDocument, rightDocument) => {
         return new Date(rightDocument.updatedAt) - new Date(leftDocument.updatedAt)
       })
     : []
+  const missingDocuments = timelineDocuments.filter((document) => document.status !== 'received')
+
+  async function handleCopyMissingItems() {
+    if (!missingDocuments.length) {
+      return
+    }
+
+    const checklistText = missingDocuments
+      .map((document, index) => `${index + 1}. ${document.label} - ${DOCUMENT_STATUS_LABELS[document.status]}`)
+      .join('\n')
+
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error('Clipboard is not available in this browser.')
+      }
+
+      await navigator.clipboard.writeText(checklistText)
+      setCopyStatus('copied')
+    } catch {
+      setCopyStatus('failed')
+    } finally {
+      window.setTimeout(() => setCopyStatus('idle'), 1800)
+    }
+  }
+
+  const copyButtonLabel = copyStatus === 'copied' ? 'Copied open items' : copyStatus === 'failed' ? 'Copy failed' : `Copy open items (${missingDocuments.length})`
 
   if (!caseItem) {
     return (
@@ -54,13 +82,19 @@ export function PackageDetails({
             ) : null}
           </div>
 
-          <div className="package-details__actions">
-            <button className="button button--secondary" onClick={() => downloadCaseSummary(caseItem)} type="button">
-              Export summary
-            </button>
-            <button className="button button--ghost" disabled={isDuplicatingCase} onClick={() => onDuplicateCase(caseItem.id)} type="button">
-              {isDuplicatingCase ? 'Making copy...' : 'Make working copy'}
-            </button>
+          <div>
+            <div className="package-details__actions">
+              <button className="button button--secondary" onClick={() => downloadCaseSummary(caseItem)} type="button">
+                Export summary
+              </button>
+              <button className="button button--ghost" disabled={!missingDocuments.length} onClick={handleCopyMissingItems} type="button">
+                {copyButtonLabel}
+              </button>
+              <button className="button button--ghost" disabled={isDuplicatingCase} onClick={() => onDuplicateCase(caseItem.id)} type="button">
+                {isDuplicatingCase ? 'Making copy...' : 'Make working copy'}
+              </button>
+            </div>
+            <p className="package-details__copy-hint">Copy the still-open evidence list before a call, email, or intake appointment.</p>
           </div>
         </div>
       </div>
