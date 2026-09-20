@@ -29,6 +29,9 @@ export function getDashboardStats(cases) {
       urgentCases: 0
     }
   )
+  const completionRate = totals.totalDocuments
+    ? Math.round((totals.receivedDocuments / totals.totalDocuments) * 100)
+    : 0
 
   return [
     {
@@ -45,6 +48,11 @@ export function getDashboardStats(cases) {
       label: 'Urgent follow-ups',
       value: totals.urgentCases,
       detail: `${totals.missingDocuments} open evidence item${totals.missingDocuments === 1 ? '' : 's'}`
+    },
+    {
+      label: 'Completion rate',
+      value: `${completionRate}%`,
+      detail: `${totals.receivedDocuments} of ${totals.totalDocuments} evidence items received`
     }
   ]
 }
