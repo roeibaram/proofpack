@@ -55,6 +55,19 @@ npm run dev
 Frontend: [http://localhost:5173](http://localhost:5173)  
 API: [http://localhost:5002](http://localhost:5002)
 
+## Environment variables
+
+The app expects the local API and database settings to live in `.env`.
+Use `.env.example` as the safe reference when setting the project up on a new machine.
+
+Common local values:
+
+- `PORT` controls the Express server port
+- `MONGODB_URI` points to the local MongoDB database
+- `JWT_SECRET` signs authentication tokens
+
+Keep real secrets out of commits. The checked-in example file should only contain safe placeholder values.
+
 ## Seed demo data
 
 To load a ready-made demo account with three realistic folders:
@@ -80,6 +93,16 @@ The seed script replaces any previous demo folders for that account so you can r
 6. Change the drawer sort mode to `Nearest follow-up` and `Most open items`
 7. Edit and delete one evidence slip to confirm the timeline updates
 8. Log out and back in to confirm data persists
+
+## Current workflow
+
+ProofPack is organized around a simple personal filing workflow:
+
+1. Create a package for one case or application
+2. Add the documents that still need to be collected
+3. Mark evidence as missing, requested, or received
+4. Use follow-up dates to decide what needs attention first
+5. Review progress from the dashboard before sending the package
 
 ## Useful scripts
 
