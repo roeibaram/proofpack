@@ -20,7 +20,8 @@ export function FilterBar({
       recent: 'Recent activity',
       followUp: 'Nearest follow-up',
       missing: 'Most open items',
-      progress: 'Most complete'
+      progress: 'Most complete',
+      title: 'Title A-Z'
     }[sortMode] ?? 'Recent activity'
 
   return (
@@ -97,6 +98,7 @@ export function FilterBar({
             <option value="followUp">Nearest follow-up</option>
             <option value="missing">Most open items</option>
             <option value="progress">Most complete</option>
+            <option value="title">Title A-Z</option>
           </select>
         </label>
       </div>

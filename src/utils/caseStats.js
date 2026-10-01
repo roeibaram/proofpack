@@ -76,6 +76,10 @@ export function getVisibleCases(cases, searchQuery, statusFilter, caseTypeFilter
     .sort((leftCase, rightCase) => {
       const updatedDifference = new Date(rightCase.updatedAt) - new Date(leftCase.updatedAt)
 
+      if (sortMode === 'title') {
+        return (leftCase.title || '').localeCompare(rightCase.title || '', undefined, { sensitivity: 'base' }) || updatedDifference
+      }
+
       if (sortMode === 'followUp') {
         return getDueSortValue(leftCase.dueDate) - getDueSortValue(rightCase.dueDate) || updatedDifference
       }
